@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  sso:
+    image: larsabrasha/sso:latest
+    restart: unless-stopped
+    ports:
+      - '4000:4000'
+    volumes:
+      - ${PWD}/data:/usr/src/app/data
+      - ${PWD}/settings.json:/usr/src/app/settings.json

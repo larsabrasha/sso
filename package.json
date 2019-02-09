@@ -21,14 +21,19 @@
   "dependencies": {
     "@nestjs/common": "^5.4.0",
     "@nestjs/core": "^5.4.0",
+    "@nestjs/jwt": "^0.3.0",
     "@nestjs/microservices": "^5.4.0",
     "@nestjs/testing": "^5.4.0",
     "@nestjs/websockets": "^5.4.0",
+    "cookie-parser": "^1.4.3",
+    "hbs": "^4.0.1",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.3",
-    "rxjs": "^6.3.3"
+    "rxjs": "^6.3.3",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.13",
     "@types/node": "^10.12.18",

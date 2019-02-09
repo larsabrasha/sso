@@ -1,0 +1,10 @@
+{
+  "serviceName": "My Cloud",
+  "ssoUrl": "https://sso.example.com",
+  "validOrigins": ["https://myapp.example.com"],
+  "validCallbackUrls": ["https://myapp.example.com/callback"],
+  "validAuds": ["example.myapp"],
+  "sessionLength": 2592000,
+  "tokenExpiresIn": 3600,
+  "secret": "myJwtSecret"
+}

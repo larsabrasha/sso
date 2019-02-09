@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{serviceName}}</title>
+</head>
+
+<body>
+
+    <script type="application/javascript">
+        const validOrigins = '{{ validOrigins }}';
+        const aud = '{{aud}}';
+
+        window.addEventListener(
+            'message',
+            function (event) {
+                if (
+                    (validOrigins.split(',')).findIndex(x => x === event.origin) == -1
+                ) {
+                    console.error('[sso iframe] origin not allowed');
+                    return;
+                }
+
+                const message = JSON.parse(event.data);
+
+                console.log(
+                    `[sso iframe] ${message.type}${
+                    message.data != null ? ': ' + message.data : ''
+                    }`
+                );
+
+                if (message.type === 'getToken') {
+                    fetch(`token?origin=${event.origin}&aud=${message.data}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                window.parent.postMessage(
+                                    `{"type": "token", "data": null}`,
+                                    event.origin
+                                );
+                                return response;
+                            } else {
+                                return response.text().then(token => {
+                                    window.parent.postMessage(
+                                        `{"type": "token", "data": "${token}"}`,
+                                        event.origin
+                                    );
+                                    return token;
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                } else if (message.type === 'logout') {
+                    fetch('logout')
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error("error logging out");
+                                return response;
+                            } else {
+                                window.parent.postMessage(
+                                    '{"type": "userDidLogout"}',
+                                    event.origin
+                                );
+                                return response;
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+            },
+            false
+        );
+
+        window.parent.postMessage('{"type": "ready"}', '*');
+    </script>
+</body>
+
+</html>
