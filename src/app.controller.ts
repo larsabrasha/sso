@@ -80,7 +80,7 @@ export class AppController {
       return res.status(400).send('callback url not allowed');
     }
 
-    const authenticated = await this.appService.signIn(username, password);
+    const authenticated = await this.appService.login(username, password);
 
     if (authenticated) {
       const ip =
@@ -128,10 +128,14 @@ export class AppController {
       return;
     }
 
+    const users = this.appService.getUsers();
+    const user = users[session.username];
+
     const payload = {
       iss: this.settings.ssoUrl,
       aud: query.aud,
       sub: session.username,
+      name: user.name,
     };
     const token = this.jwtService.sign(payload);
     res.send(token);

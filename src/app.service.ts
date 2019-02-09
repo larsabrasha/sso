@@ -9,26 +9,33 @@ import {
 import { isPasswordCorrect } from './password.utils';
 import { Secret } from './secret';
 import { Session } from './session';
+import { User } from './user';
 
 @Injectable()
 export class AppService {
   sessionsFilePath: string;
   secretsFilePath: string;
+  usersFilePath: string;
 
   secrets: { [username: string]: Secret };
+  users: { [username: string]: User };
+
   cachedSessions: { [id: string]: Session };
 
   constructor() {
     this.sessionsFilePath = getAbsoluteFilePath('./data/sessions.json');
     this.secretsFilePath = getAbsoluteFilePath('./data/secrets.json');
+    this.usersFilePath = getAbsoluteFilePath('./data/users.json');
 
     ensureDirectoryExistence(this.sessionsFilePath);
     ensureDirectoryExistence(this.secretsFilePath);
+    ensureDirectoryExistence(this.usersFilePath);
 
     this.secrets = JSON.parse(readFileAsString(this.secretsFilePath));
+    this.users = JSON.parse(readFileAsString(this.usersFilePath));
   }
 
-  async signIn(username: string, password: string): Promise<boolean> {
+  async login(username: string, password: string): Promise<boolean> {
     const secret = this.secrets[username];
 
     if (secret == null) {
@@ -55,6 +62,10 @@ export class AppService {
     }
 
     return this.cachedSessions;
+  }
+
+  getUsers(): { [id: string]: User } {
+    return this.users;
   }
 
   createSession(username: string, ip: string): string {
